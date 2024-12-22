@@ -3,7 +3,6 @@ import { chunk } from 'lodash-es';
 import pMap from 'p-map';
 import { z } from 'zod';
 
-import { serverDBEnv } from '@/config/db';
 import { fileEnv } from '@/config/file';
 import { DEFAULT_EMBEDDING_MODEL } from '@/const/settings';
 import { NewChunkItem, NewEmbeddingsItem } from '@/database/schemas';
@@ -177,8 +176,8 @@ export const fileRouter = router({
         // if file not found, delete it from db
         if ((e as any)?.Code === 'NoSuchKey') {
           await ctx.fileModel.delete(input.fileId);
-          
-        
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'File not found' });
+        }
       }
 
       if (!content) return;
@@ -267,7 +266,6 @@ export const fileRouter = router({
         });
 
         return {
-          message: `File ${file.name}(${input.taskId}) failed to chunking: ${(e as Error).message}`,
           success: false,
         };
       }
