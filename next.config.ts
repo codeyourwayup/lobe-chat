@@ -32,6 +32,8 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  // reduce build size and memory usage
+  outputFileTracing: false,
   experimental: {
     ...(disableOptimizeImports
       ? {}
@@ -53,6 +55,8 @@ const nextConfig: NextConfig = {
     serverMinification: false,
     webVitalsAttribution: ['CLS', 'LCP'],
     webpackMemoryOptimizations: true,
+    // reduce memory usage during build
+    cpus: 2,
   },
   async headers() {
     const securityHeaders = [
