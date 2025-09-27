@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   // reduce build size and memory usage
-  outputFileTracing: false,
+  generateBuildId: () => 'build',
   experimental: {
     ...(disableOptimizeImports
       ? {}
@@ -56,7 +56,9 @@ const nextConfig: NextConfig = {
     webVitalsAttribution: ['CLS', 'LCP'],
     webpackMemoryOptimizations: true,
     // reduce memory usage during build
-    cpus: 2,
+    cpus: 1,
+    // disable more experimental features to reduce build complexity
+    serverComponentsExternalPackages: ['sharp'],
   },
   async headers() {
     const securityHeaders = [
@@ -292,6 +294,25 @@ const nextConfig: NextConfig = {
     config.experiments = {
       asyncWebAssembly: true,
       layers: true,
+    };
+
+    // reduce memory usage during build
+    config.optimization = {
+      ...config.optimization,
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          default: false,
+          vendors: false,
+          // reduce chunk splitting to save memory
+          vendor: {
+            name: 'vendor',
+            chunks: 'all',
+            test: /node_modules/,
+            priority: 20,
+          },
+        },
+      },
     };
 
     // 开启该插件会导致 pglite 的 fs bundler 被改表
