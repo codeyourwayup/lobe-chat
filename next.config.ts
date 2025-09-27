@@ -55,6 +55,10 @@ const nextConfig: NextConfig = {
     webpackMemoryOptimizations: true,
     // limit CPU usage on constrained CI like Netlify
     cpus: process.env.CI ? 6 : undefined,
+    // disable some experimental features that can cause issues on Netlify
+    ...(isNetlify ? {
+      serverComponentsExternalPackages: ['sharp'],
+    } : {}),
   },
   async headers() {
     const securityHeaders = [
