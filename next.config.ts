@@ -9,6 +9,9 @@ const isDesktop = process.env.NEXT_PUBLIC_IS_DESKTOP_APP === '1';
 const enableReactScan = !!process.env.REACT_SCAN_MONITOR_API_KEY;
 const isUsePglite = process.env.NEXT_PUBLIC_CLIENT_DB === 'pglite';
 const shouldUseCSP = process.env.ENABLED_CSP === '1';
+const isNetlify = process.env.NETLIFY === 'true';
+const disablePWA = process.env.DISABLE_PWA === '1' || isNetlify;
+const disableOptimizeImports = process.env.DISABLE_OPTIMIZE_IMPORTS === '1' || isNetlify;
 
 // if you need to proxy the api endpoint to remote server
 
@@ -30,15 +33,19 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    optimizePackageImports: [
-      'emoji-mart',
-      '@emoji-mart/react',
-      '@emoji-mart/data',
-      '@icons-pack/react-simple-icons',
-      '@lobehub/ui',
-      '@lobehub/icons',
-      'gpt-tokenizer',
-    ],
+    ...(disableOptimizeImports
+      ? {}
+      : {
+        optimizePackageImports: [
+          'emoji-mart',
+          '@emoji-mart/react',
+          '@emoji-mart/data',
+          '@icons-pack/react-simple-icons',
+          '@lobehub/ui',
+          '@lobehub/icons',
+          'gpt-tokenizer',
+        ],
+      }),
     // oidc provider depend on constructor.name
     // but swc minification will remove the name
     // so we need to disable it
@@ -46,6 +53,8 @@ const nextConfig: NextConfig = {
     serverMinification: false,
     webVitalsAttribution: ['CLS', 'LCP'],
     webpackMemoryOptimizations: true,
+    // limit CPU usage on constrained CI like Netlify
+    cpus: process.env.CI ? 6 : undefined,
   },
   async headers() {
     const securityHeaders = [
@@ -319,12 +328,12 @@ const noWrapper = (config: NextConfig) => config;
 const withBundleAnalyzer = process.env.ANALYZE === 'true' ? analyzer() : noWrapper;
 
 const withPWA =
-  isProd && !isDesktop
+  isProd && !isDesktop && !disablePWA
     ? withSerwistInit({
-        register: false,
-        swDest: 'public/sw.js',
-        swSrc: 'src/app/sw.ts',
-      })
+      register: false,
+      swDest: 'public/sw.js',
+      swSrc: 'src/app/sw.ts',
+    })
     : noWrapper;
 
 export default withBundleAnalyzer(withPWA(nextConfig as NextConfig));
