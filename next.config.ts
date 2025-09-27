@@ -52,16 +52,16 @@ const nextConfig: NextConfig = {
     // refs: https://github.com/lobehub/lobe-chat/pull/7430
     serverMinification: false,
     webVitalsAttribution: ['CLS', 'LCP'],
-    webpackMemoryOptimizations: true,
     // limit CPU usage on constrained CI like Netlify
     cpus: process.env.CI ? 4 : undefined,
     // disable some experimental features that can cause issues on Netlify
     ...(isNetlify ? {
       serverComponentsExternalPackages: ['sharp'],
       // disable more experimental features on Netlify
-      serverMinification: false,
       webpackMemoryOptimizations: false,
-    } : {}),
+    } : {
+      webpackMemoryOptimizations: true,
+    }),
   },
   async headers() {
     const securityHeaders = [
