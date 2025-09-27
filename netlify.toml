@@ -11,8 +11,6 @@ DISABLE_OPTIMIZE_IMPORTS = "1"
 NEXT_TELEMETRY_DISABLED = "1"
 NETLIFY = "1"
 CI = "true"
-DEBUG = "next:*"
-NEXT_DEBUG = "1"
 
 [template.environment]
 OPENAI_API_KEY = "set your OpenAI API Key"
