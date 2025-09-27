@@ -10,8 +10,8 @@ const enableReactScan = !!process.env.REACT_SCAN_MONITOR_API_KEY;
 const isUsePglite = process.env.NEXT_PUBLIC_CLIENT_DB === 'pglite';
 const shouldUseCSP = process.env.ENABLED_CSP === '1';
 const isNetlify = process.env.NETLIFY === 'true';
-const disablePWA = process.env.DISABLE_PWA === '1' || isNetlify;
-const disableOptimizeImports = process.env.DISABLE_OPTIMIZE_IMPORTS === '1' || isNetlify;
+const disablePWA = process.env.DISABLE_PWA === '1';
+const disableOptimizeImports = process.env.DISABLE_OPTIMIZE_IMPORTS === '1';
 
 // if you need to proxy the api endpoint to remote server
 
@@ -52,16 +52,7 @@ const nextConfig: NextConfig = {
     // refs: https://github.com/lobehub/lobe-chat/pull/7430
     serverMinification: false,
     webVitalsAttribution: ['CLS', 'LCP'],
-    // limit CPU usage on constrained CI like Netlify
-    cpus: process.env.CI ? 4 : undefined,
-    // disable some experimental features that can cause issues on Netlify
-    ...(isNetlify ? {
-      serverComponentsExternalPackages: ['sharp'],
-      // disable more experimental features on Netlify
-      webpackMemoryOptimizations: false,
-    } : {
-      webpackMemoryOptimizations: true,
-    }),
+    webpackMemoryOptimizations: true,
   },
   async headers() {
     const securityHeaders = [
