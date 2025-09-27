@@ -54,10 +54,13 @@ const nextConfig: NextConfig = {
     webVitalsAttribution: ['CLS', 'LCP'],
     webpackMemoryOptimizations: true,
     // limit CPU usage on constrained CI like Netlify
-    cpus: process.env.CI ? 6 : undefined,
+    cpus: process.env.CI ? 4 : undefined,
     // disable some experimental features that can cause issues on Netlify
     ...(isNetlify ? {
       serverComponentsExternalPackages: ['sharp'],
+      // disable more experimental features on Netlify
+      serverMinification: false,
+      webpackMemoryOptimizations: false,
     } : {}),
   },
   async headers() {

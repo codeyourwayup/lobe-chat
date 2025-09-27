@@ -3,7 +3,7 @@ command = "rm -rf .next node_modules/.cache && pnpm run build"
 publish = ".next"
 
 [build.environment]
-NODE_OPTIONS = "--max-old-space-size=4096"
+NODE_OPTIONS = "--max-old-space-size=3072"
 NODE_VERSION = "20"
 PNPM_VERSION = "10.17.0"
 DISABLE_PWA = "1"
@@ -11,6 +11,8 @@ DISABLE_OPTIMIZE_IMPORTS = "1"
 NEXT_TELEMETRY_DISABLED = "1"
 NETLIFY = "1"
 CI = "true"
+DEBUG = "next:*"
+NEXT_DEBUG = "1"
 
 [template.environment]
 OPENAI_API_KEY = "set your OpenAI API Key"
