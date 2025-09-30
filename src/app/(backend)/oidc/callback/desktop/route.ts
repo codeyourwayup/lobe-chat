@@ -1,5 +1,5 @@
 import debug from 'debug';
-import { NextRequest, NextResponse, after } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { OAuthHandoffModel } from '@/database/models/oauthHandoff';
 import { serverDB } from '@/database/server';
@@ -84,13 +84,6 @@ export const GET = async (req: NextRequest) => {
 
     const correctedUrl = correctOIDCUrl(req, successUrl);
     log('Final redirect URL: %s', correctedUrl.toString());
-
-    // cleanup expired
-    after(async () => {
-      const cleanedCount = await authHandoffModel.cleanupExpired();
-
-      log('Cleaned up %d expired handoff records', cleanedCount);
-    });
 
     return NextResponse.redirect(correctedUrl);
   } catch (error) {

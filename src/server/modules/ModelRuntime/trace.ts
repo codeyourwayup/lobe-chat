@@ -1,7 +1,6 @@
 import { INBOX_SESSION_ID, LOBE_CHAT_OBSERVATION_ID, LOBE_CHAT_TRACE_ID } from '@lobechat/const';
 import { ChatStreamCallbacks, ChatStreamPayload } from '@lobechat/model-runtime';
 import { TracePayload, TraceTagMap } from '@lobechat/types';
-import { after } from 'next/server';
 
 import { TraceClient } from '@/libs/traces';
 
@@ -75,13 +74,7 @@ export const createTraceOptions = (
       },
 
       onFinal: () => {
-        after(async () => {
-          try {
-            await traceClient.shutdownAsync();
-          } catch (e) {
-            console.error('TraceClient shutdown error:', e);
-          }
-        });
+        // Removed after() call for Next.js 14 compatibility
       },
 
       onStart: () => {
