@@ -313,13 +313,6 @@ const nextConfig: NextConfig = {
           },
         },
       },
-      // Additional memory optimizations for Vercel
-      minimize: isProd,
-      ...(isProd && {
-        minimizer: [
-          '...',
-        ],
-      }),
     };
 
     // 开启该插件会导致 pglite 的 fs bundler 被改表
