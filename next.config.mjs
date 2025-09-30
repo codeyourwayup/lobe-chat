@@ -1,6 +1,5 @@
 import analyzer from '@next/bundle-analyzer';
 import withSerwistInit from '@serwist/next';
-import type { NextConfig } from 'next';
 import ReactComponentName from 'react-scan/react-component-name/webpack';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -17,12 +16,12 @@ const disableOptimizeImports = process.env.DISABLE_OPTIMIZE_IMPORTS === '1';
 
 const isStandaloneMode = buildWithDocker || isDesktop;
 
-const standaloneConfig: NextConfig = {
+const standaloneConfig = {
   output: 'standalone',
   outputFileTracingIncludes: { '*': ['public/**/*', '.next/static/**/*'] },
 };
 
-const nextConfig: NextConfig = {
+const nextConfig = {
   ...(isStandaloneMode ? standaloneConfig : {}),
   assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX,
   compiler: {
@@ -344,7 +343,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-const noWrapper = (config: NextConfig) => config;
+const noWrapper = (config) => config;
 
 const withBundleAnalyzer = process.env.ANALYZE === 'true' ? analyzer() : noWrapper;
 
@@ -357,4 +356,4 @@ const withPWA =
     })
     : noWrapper;
 
-export default withBundleAnalyzer(withPWA(nextConfig as NextConfig));
+export default withBundleAnalyzer(withPWA(nextConfig));
