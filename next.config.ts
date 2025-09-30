@@ -57,8 +57,6 @@ const nextConfig: NextConfig = {
     webpackMemoryOptimizations: true,
     // reduce memory usage during build
     cpus: 1,
-    // disable more experimental features to reduce build complexity
-    serverComponentsExternalPackages: ['sharp'],
   },
   async headers() {
     const securityHeaders = [
@@ -283,7 +281,7 @@ const nextConfig: NextConfig = {
   ],
 
   // when external packages in dev mode with turbopack, this config will lead to bundle error
-  serverExternalPackages: isProd ? ['@electric-sql/pglite'] : undefined,
+  serverExternalPackages: isProd ? ['@electric-sql/pglite', 'sharp'] : undefined,
   transpilePackages: ['pdfjs-dist', 'mermaid'],
 
   typescript: {
@@ -301,6 +299,8 @@ const nextConfig: NextConfig = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
+        maxInitialRequests: 25,
+        minSize: 20000,
         cacheGroups: {
           default: false,
           vendors: false,
@@ -313,6 +313,13 @@ const nextConfig: NextConfig = {
           },
         },
       },
+      // Additional memory optimizations for Vercel
+      minimize: isProd,
+      ...(isProd && {
+        minimizer: [
+          '...',
+        ],
+      }),
     };
 
     // 开启该插件会导致 pglite 的 fs bundler 被改表
